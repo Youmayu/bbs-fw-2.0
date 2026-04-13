@@ -1,80 +1,129 @@
 # BBSHD/BBS02/TSDZ2 Open Source Firmware
 
-![GitHub all releases](https://img.shields.io/github/downloads/danielnilsson9/bbs-fw/total?style=for-the-badge)
-![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/danielnilsson9/bbs-fw?include_prereleases&style=for-the-badge)
-![GitHub](https://img.shields.io/github/license/danielnilsson9/bbs-fw?style=for-the-badge)
+This repository contains open source replacement firmware for Bafang BBSHD and BBS02 motor controllers. It also supports TongSheng TSDZ2 controllers with Bafang-compatible displays when a suitable custom cable is used.
 
-This firmware is intended to replace the original Bafang firmware on the BBSHD/BBS02 motor controller. Almost all functionality of original firmware has been implemented and additional features have been added.
+This fork is based on the upstream [danielnilsson9/bbs-fw](https://github.com/danielnilsson9/bbs-fw) project and includes local documentation updates plus compatibility work for displays such as the 860C.
 
-This firmware is compatible with all displays that works with the original Bafang firmware. A custom configuration tool is provided since BafangConfigTool is not compatible due to a different set of supported parameters.
+Do not flash or configure the controller while the e-bike battery is charging.
 
-The firmware is also compatible with the TongSheng TSDZ2 controller but requires a custom made cable in order to interface with Bafang compatible displays.
+## Documentation
 
-⚠️ Warning: The firmware should NOT be flashed or configured while the eBike battery is charging!
+- [Local wiki draft](wiki/Home.md)
+- [GitHub wiki](https://github.com/Youmayu/bbs-fw-2.0/wiki)
+- [Build from Source](wiki/Build-from-Source.md)
+- [Flash Firmware](wiki/Flash-Firmware.md)
+- [Configuration Tool](wiki/Configuration-Tool.md)
+- [Display Behavior](wiki/Display-Behavior.md)
+- [Troubleshooting](wiki/Troubleshooting.md)
 
-**Download**  
-https://github.com/danielnilsson9/bbshd-fw/releases
-
-**Install**  
-https://github.com/danielnilsson9/bbs-fw/wiki/Flash-Firmware-(BBS02-&-BBSHD)
-
-**Configure**  
-https://github.com/danielnilsson9/bbshd-fw/wiki/Configuration-Tool
-
-
-If you find this project useful, consider sending a small [donation](https://www.paypal.com/donate/?business=LVAYFCMQYN8F4&no_recurring=0&item_name=BBSHD-FW&currency_code=USD) to fund further development.
-
-## Known Issues
-* ⚠️ Unstable on BBS02 controllers!
+The local `wiki/` folder contains the same draft pages prepared for publishing to the GitHub wiki repository.
 
 ## Highlights
-* ✅ A bit more power without hardware modifications! (max 33A). 
-* ✅ No upper voltage limit in software, can by default run up to 63V (maximum rating of components).
-* ✅ Support lower voltage cutoff for use with e.g. 36V battery.
-* ✅ Smooth Throttle/PAS override.
-* ✅ Optional separate set of street legal & offroad assist levels which can be toggled by a key combination.
-* ✅ Support setting road speed limit per assist level.
-* ✅ Support setting cadence limit per assist level.
-* ✅ Support cruise assist levels (i.e. motor power without pedal or throttle input).
-* ✅ Thermal limiting gradual ramp down.
-* ✅ Low voltage gradual ramp down.
-* ✅ Voltage calibration for accurate LVC and low voltage ramp down.
-* ✅ Display motor/controller temperature on standard display.
-* ✅ Use of speed sensor is optional.
 
-![Config Tool](https://github.com/user-attachments/assets/1534c303-b25f-4fa4-8b37-5b74ade4a800)
+- Higher current limits without hardware modification, up to the firmware and controller limit.
+- Configurable low-voltage cutoff for different battery voltages.
+- Smooth throttle and pedal-assist override behavior.
+- Two operation mode pages, normally used as standard and sport assist profiles.
+- Per-assist-level road speed limits.
+- Per-assist-level cadence limits.
+- Cruise assist levels, where motor power can stay active without pedal or throttle input after engagement.
+- Gradual thermal current limiting.
+- Gradual low-voltage current limiting.
+- Battery voltage calibration for more accurate low-voltage cutoff and low-voltage rampdown.
+- Temperature display on compatible Bafang display fields.
+- Optional speed sensor use.
+- Optional shift sensor support on BBSHD and BBS02.
+- Optional drivetrain pretension.
+- Configurable external lights behavior.
+
+## Display Compatibility Notes
+
+Only displays that use the Bafang display protocol can work. Some displays implement that protocol differently, so behavior can still vary by display model.
+
+This fork ignores display work-mode write commands after validating the packet checksum. This prevents displays such as the 860C from continuously forcing ECO or Sport mode and lets the controller-side operation-mode toggle control the selected mode.
+
+The firmware also repurposes some standard Bafang display fields:
+
+- The range field shows temperature by default on BBSHD and BBS02.
+- The calories field shows battery voltage.
+- Walk mode can show temperature, requested power, or battery percentage in the speed field.
+- Display speed-limit writes are ignored; configure speed limits in the BBS-FW configuration tool.
+
+See [Display Behavior](wiki/Display-Behavior.md) for details.
 
 ## Supported Hardware
 
 ### BBSHD
 
-Revision | MCU          | Released    | Comment
--------- | ------------ | ----------- | --------------------
-V1.4     | STC15W4K56S4 | ~2017       | V1.3 printed on PCB, sticker with 1.4.
-V1.5     | IAP15W4K61S4 | ~2019       | V1.4 printed on PCB, sticker with 1.5.
+| Revision | MCU          | Released | Comment |
+| -------- | ------------ | -------- | ------- |
+| V1.4     | STC15W4K56S4 | ~2017    | V1.3 printed on PCB, sticker with 1.4. |
+| V1.5     | IAP15W4K61S4 | ~2019    | V1.4 printed on PCB, sticker with 1.5. |
+
+Do not flash other BBSHD controller revisions unless you accept the risk of bricking the controller.
 
 ### BBS02B
-There are compatibility issues reported, this firmware is suspected to be incompatible with older BBS02 controllers.
-If you have a newer BBS02B you are probably fine, if you have an older controller it might not be a good idea to flash this firmware.
 
-Revision | MCU          | Released    | Comment
--------- | ------------ | ----------- | --------------------
-V1.?     | STC15F2K60S2 |             | Supported from BBS-FW version 1.1
-V1.?     | IAP15F2K61S2 |             | Supported from BBS-FW version 1.1
+There are reported compatibility issues with some BBS02 controllers. Newer BBS02B controllers are more likely to work. Older controllers may not be safe to flash.
 
-BBS02A - No idea, not tested, not recommended to try unless you have an already bricked controller.
+| Revision | MCU          | Released | Comment |
+| -------- | ------------ | -------- | ------- |
+| V1.?     | STC15F2K60S2 | Unknown  | Supported from BBS-FW version 1.1. |
+| V1.?     | IAP15F2K61S2 | Unknown  | Supported from BBS-FW version 1.1. |
+
+BBS02A is not tested and is not recommended unless the controller is already bricked and you accept the risk.
 
 ### TSDZ2
-Compatible with TSDZ2A/B using the STM microcontroller (which is nearly all off them).
 
-### Displays and Controller 
+TSDZ2A/B controllers using the STM microcontroller are supported. This is most TSDZ2 controllers. A custom cable is required to interface with Bafang-compatible displays.
 
-Only displays with the Bafang display protocol can work. 
+## Build Quick Start
 
-Also the controllers need to be those, that are officially designed by Bafang, respectively Tongshen. 
+Install `make` and SDCC 4.2, then build from `src/firmware`.
 
-Some shops sell kits with their own controller.
+Build BBSHD:
+
+```powershell
+make -B all TARGET_CONTROLLER=BBSHD
+```
+
+Build BBS02:
+
+```powershell
+make -B all TARGET_CONTROLLER=BBS02
+```
+
+The generated firmware file is:
+
+```text
+src/firmware/bbs-fw.hex
+```
+
+This file is overwritten by each build. Save target-specific copies if you build for more than one controller:
+
+```powershell
+make -B all TARGET_CONTROLLER=BBSHD
+copy bbs-fw.hex bbs-fw-BBSHD.hex
+
+make -B all TARGET_CONTROLLER=BBS02
+copy bbs-fw.hex bbs-fw-BBS02.hex
+```
+
+## Configuration Tool
+
+The standard Bafang configuration tool is not compatible with this firmware's configuration layout. Use the BBS-FW configuration tool in `src/tool`.
+
+To build it, open:
+
+```text
+src/tool/bbs-fw-tool.sln
+```
+
+in Visual Studio 2022 with the .NET desktop development workload installed.
 
 ## Legal
-* Installing this firmware will void your warranty.
-* I cannot be held responsible for any injuries caused by the use of this firmware, use at your own risk.
+
+- Installing this firmware will void your warranty.
+- Use this firmware at your own risk.
+- Incorrect flashing or incompatible hardware can brick the controller.
+- Incorrect configuration can make the bike behave unexpectedly. Test changes carefully in a safe area.
