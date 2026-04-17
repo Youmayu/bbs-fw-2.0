@@ -820,9 +820,25 @@ static int16_t process_bafang_display_write_mode()
 
 	if (compute_checksum(msgbuf, 3) == msgbuf[3])
 	{
-		// Some displays, including the 860c, continuously force their configured
-		// work mode. The controller owns operation mode selection, so acknowledge
-		// the packet but do not apply the display's ECO/Sport request.
+		if (g_config.display_type == DISPLAY_TYPE_860C)
+		{
+			// The 860C continuously forces its configured work mode. The controller
+			// owns operation mode selection, so acknowledge but ignore that request.
+			return 4;
+		}
+
+		switch (msgbuf[2])
+		{
+		case 0x02:
+			app_set_operation_mode(OPERATION_MODE_DEFAULT);
+			break;
+		case 0x04:
+			app_set_operation_mode(OPERATION_MODE_SPORT);
+			break;
+		default:
+			// Unsupported mode, ignore
+			break;
+		}
 	}
 	else
 	{

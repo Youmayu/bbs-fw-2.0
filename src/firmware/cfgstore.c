@@ -192,6 +192,7 @@ static void load_default_config()
 	g_config.shift_interrupt_current_threshold_percent = 10;
 
 	g_config.walk_mode_data_display = WALK_MODE_DATA_SPEED;
+	g_config.display_type = DISPLAY_TYPE_OTHER;
 
 	g_config.assist_mode_select = ASSIST_MODE_SELECT_OFF;
 	g_config.assist_startup_level = 3;

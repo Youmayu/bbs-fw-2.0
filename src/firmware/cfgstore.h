@@ -45,6 +45,9 @@
 #define WALK_MODE_DATA_REQUESTED_POWER	2
 #define WALK_MODE_DATA_BATTERY_PERCENT	3
 
+#define DISPLAY_TYPE_OTHER				0
+#define DISPLAY_TYPE_860C				1
+
 #define THROTTLE_GLOBAL_SPEED_LIMIT_DISABLED	0
 #define THROTTLE_GLOBAL_SPEED_LIMIT_ENABLED		1
 #define THROTTLE_GLOBAL_SPEED_LIMIT_STD_LVLS	2
@@ -54,7 +57,7 @@
 #define LIGHTS_MODE_ALWAYS_ON			2
 #define LIGHTS_MODE_BRAKE_LIGHT			3
 
-#define CONFIG_VERSION					5
+#define CONFIG_VERSION					6
 #define PSTATE_VERSION					1
 
 
@@ -120,6 +123,7 @@ typedef struct
 
 	// misc
 	uint8_t walk_mode_data_display;
+	uint8_t display_type;
 
 	// assist levels
 	uint8_t assist_mode_select;
