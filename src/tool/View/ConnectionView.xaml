@@ -43,7 +43,7 @@
 
 			<Button Content="Connect" Width="120" Command="{Binding ConnectCommand}">
 				<Button.Style>
-					<Style TargetType="{x:Type Button}">
+					<Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
 						<Setter Property="IsEnabled" Value="True" />
 						<Setter Property="Visibility" Value="Visible" />
 						<Style.Triggers>

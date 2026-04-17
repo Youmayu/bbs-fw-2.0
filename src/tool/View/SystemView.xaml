@@ -120,7 +120,7 @@
 				</TextBlock>
 				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleGlobalSpeedLimitPercent, UpdateSourceTrigger=PropertyChanged}">
 					<TextBox.Style>
-						<Style TargetType="{x:Type TextBox}">
+						<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
 							<Setter Property="IsEnabled" Value="True" />
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding ConfigVm.ThrottleGlobalSpeedLimitOpt.Value}" Value="Disabled">
@@ -378,6 +378,20 @@
 					</TextBlock.ToolTip>
 				</TextBlock>
 				<ComboBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" Padding="6 2 6 0" Width="120" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.WalkModeDataDisplayOptions}" SelectedItem="{Binding ConfigVm.WalkModeDataDisplay, UpdateSourceTrigger=PropertyChanged}" />
+
+				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Display:">
+					<TextBlock.ToolTip>
+						<TextBlock Width="400" TextWrapping="Wrap">
+						Select the connected display type.
+						<LineBreak />
+						<LineBreak />
+						<Run FontWeight="Bold">Other displays</Run> - Uses standard Bafang display work-mode handling.
+						<LineBreak />
+						<Run FontWeight="Bold">860C</Run> - Ignores display work-mode requests so the controller controls ECO/Sport mode.
+						</TextBlock>
+					</TextBlock.ToolTip>
+				</TextBlock>
+				<ComboBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Padding="6 2 6 0" Width="120" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.DisplayTypeOptions}" SelectedItem="{Binding ConfigVm.Display, UpdateSourceTrigger=PropertyChanged}" />
 
 			</Grid>
 

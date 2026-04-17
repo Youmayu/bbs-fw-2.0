@@ -77,7 +77,6 @@
 
 
 		<DataGrid x:Name="LogEventGrid" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding FilteredLogEvents}" Margin="0 2 0 0" 
-			Background="White"
 			HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="True"
 			SelectionMode="Single" SelectionUnit="FullRow"
 			VerticalScrollBarVisibility="Visible"
@@ -92,13 +91,13 @@
 				<Style TargetType="{x:Type DataGridRow}">
 					<Style.Triggers>
 						<DataTrigger Binding="{Binding Level}" Value="Info">
-							<Setter Property="Background" Value="#ffffff" />
+							<Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
 						</DataTrigger>
 						<DataTrigger Binding="{Binding Level}" Value="Warning">
-							<Setter Property="Background" Value="#ffe9b3" />
+							<Setter Property="Background" Value="{StaticResource WarningSoftBrush}" />
 						</DataTrigger>
 						<DataTrigger Binding="{Binding Level}" Value="Error">
-							<Setter Property="Background" Value="#ffdede" />
+							<Setter Property="Background" Value="{StaticResource ErrorSoftBrush}" />
 						</DataTrigger>
 					</Style.Triggers>
 				</Style>
