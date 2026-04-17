@@ -175,10 +175,11 @@ void app_process()
 		false;
 #endif
 	bool is_limiting = speed_limiting || thermal_limiting || lvc_limiting || shift_limiting;
+	bool speed_cutoff_active = speed_limiting && target_current == 0;
 	bool is_braking = apply_brake(&target_current);
 
 	apply_current_ramp_up(&target_current, is_limiting || !throttle_override);
-	apply_current_ramp_down(&target_current, !is_braking && !shift_limiting);
+	apply_current_ramp_down(&target_current, !is_braking && !shift_limiting && !speed_cutoff_active);
 
 	motor_set_target_speed(target_cadence);
 	motor_set_target_current(target_current);
@@ -576,7 +577,10 @@ bool apply_speed_limit(uint8_t* target_current, uint8_t throttle_percent, bool p
 	}
 
 	int32_t max_speed_ramp_low_rpm_x10 = max_speed_rpm_x10 - speed_limit_ramp_interval_rpm_x10;
-	int32_t max_speed_ramp_high_rpm_x10 = max_speed_rpm_x10 + speed_limit_ramp_interval_rpm_x10;
+	if (max_speed_ramp_low_rpm_x10 < 0)
+	{
+		max_speed_ramp_low_rpm_x10 = 0;
+	}
 
 	if (max_speed_rpm_x10 > 0)
 	{
@@ -599,18 +603,18 @@ bool apply_speed_limit(uint8_t* target_current, uint8_t throttle_percent, bool p
 				eventlog_write_data(EVT_DATA_SPEED_LIMITING, 1);
 			}
 
-			if (current_speed_rpm_x10 > max_speed_ramp_high_rpm_x10)
+			if (current_speed_rpm_x10 >= max_speed_rpm_x10)
 			{
-				if (*target_current > 1)
+				if (*target_current > 0)
 				{
-					*target_current = 1;
+					*target_current = 0;
 					return true;
 				}
 			}
 			else
 			{
-				// linear ramp down when approaching max speed.
-				uint8_t tmp = (uint8_t)MAP32(current_speed_rpm_x10, max_speed_ramp_low_rpm_x10, max_speed_ramp_high_rpm_x10, *target_current, 1);
+				// Linear ramp down approaching max speed, with max speed as the cutoff point.
+				uint8_t tmp = (uint8_t)MAP32(current_speed_rpm_x10, max_speed_ramp_low_rpm_x10, max_speed_rpm_x10, *target_current, 0);
 				if (*target_current > tmp)
 				{
 					*target_current = tmp;
