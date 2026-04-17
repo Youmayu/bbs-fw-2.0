@@ -7,8 +7,13 @@
 		xmlns:vm="clr-namespace:BBSFW.ViewModel"
 		xmlns:vw="clr-namespace:BBSFW.View"
         mc:Ignorable="d"
-        Title="BBS-FW Tool" Height="640" Width="860"
-		Background="#FFE8E8E8">
+        Title="BBS-FW Tool"
+		Height="760"
+		Width="1120"
+		MinHeight="680"
+		MinWidth="980"
+		WindowStartupLocation="CenterScreen"
+		Background="{StaticResource AppBackgroundBrush}">
 
 	<Window.DataContext>
 		<vm:MainViewModel />
@@ -20,48 +25,78 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
 		</Grid.RowDefinitions>
-		
-		<Menu Grid.Row="0">
-			<MenuItem Header="File" Height="22" VerticalContentAlignment="Center">
-				<MenuItem Header="Open..." Command="{Binding OpenConfigCommand}" />
-				<MenuItem Header="Save As..." Command="{Binding SaveConfigCommand}" />
-				<Separator />
-				<MenuItem Header="Save Log..." Command="{Binding SaveLogCommand}" />
-				<Separator />
-				<MenuItem Header="Exit" Command="{Binding ExitCommand}" />
-			</MenuItem>
-			<MenuItem Header="Flash" Height="22" VerticalContentAlignment="Center">
-				<MenuItem Header="Read" IsEnabled="{Binding ConnectionVm.IsConnected}" Command="{Binding ReadFlashCommand}" />
-				<MenuItem Header="Write" IsEnabled="{Binding ConnectionVm.IsConnected}" Command="{Binding WriteFlashCommand}" />
-				<Separator />
-				<MenuItem Header="Reset" IsEnabled="{Binding ConnectionVm.IsConnected}" Command="{Binding ResetFlashCommand}" />
-			</MenuItem>
-			<MenuItem Header="Options" Height="22" VerticalContentAlignment="Center">
-				<MenuItem Header="Units">
-					<MenuItem Header="Metric" IsCheckable="True" IsChecked="{Binding ConfigVm.UseMetricUnits}" />
-					<MenuItem Header="Imperial" IsCheckable="True" IsChecked="{Binding ConfigVm.UseImperialUnits}" />
-				</MenuItem>
-			</MenuItem>
-			<MenuItem Header="Help" Height="22" VerticalContentAlignment="Center">
-				<MenuItem Header="About" Command="{Binding ShowAboutCommand}" />
-			</MenuItem>
-		</Menu>
 
-		<TabControl Margin="4 8 4 4" Grid.Row="1">
+		<Border Grid.Row="0"
+				Background="{StaticResource SurfaceBrush}"
+				BorderBrush="{StaticResource BorderBrush}"
+				BorderThickness="0 0 0 1">
+			<Grid Margin="24 14">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+					<Border Width="40"
+							Height="40"
+							CornerRadius="8"
+							Background="{StaticResource AccentBrush}">
+						<TextBlock Text="B"
+								   FontSize="20"
+								   FontWeight="Bold"
+								   Foreground="White"
+								   HorizontalAlignment="Center"
+								   VerticalAlignment="Center" />
+					</Border>
+					<StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+						<TextBlock Text="BBS-FW Tool" FontSize="20" FontWeight="SemiBold" />
+						<TextBlock Text="Firmware configuration" Foreground="{StaticResource MutedTextBrush}" />
+					</StackPanel>
+				</StackPanel>
+
+				<Menu Grid.Column="1" VerticalAlignment="Center">
+					<MenuItem Header="File" VerticalContentAlignment="Center">
+						<MenuItem Header="Open..." Command="{Binding OpenConfigCommand}" />
+						<MenuItem Header="Save As..." Command="{Binding SaveConfigCommand}" />
+						<Separator />
+						<MenuItem Header="Save Log..." Command="{Binding SaveLogCommand}" />
+						<Separator />
+						<MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+					</MenuItem>
+					<MenuItem Header="Flash" VerticalContentAlignment="Center">
+						<MenuItem Header="Read" IsEnabled="{Binding ConnectionVm.IsConnected}" Command="{Binding ReadFlashCommand}" />
+						<MenuItem Header="Write" IsEnabled="{Binding ConnectionVm.IsConnected}" Command="{Binding WriteFlashCommand}" />
+						<Separator />
+						<MenuItem Header="Reset" IsEnabled="{Binding ConnectionVm.IsConnected}" Command="{Binding ResetFlashCommand}" />
+					</MenuItem>
+					<MenuItem Header="Options" VerticalContentAlignment="Center">
+						<MenuItem Header="Units">
+							<MenuItem Header="Metric" IsCheckable="True" IsChecked="{Binding ConfigVm.UseMetricUnits}" />
+							<MenuItem Header="Imperial" IsCheckable="True" IsChecked="{Binding ConfigVm.UseImperialUnits}" />
+						</MenuItem>
+					</MenuItem>
+					<MenuItem Header="Help" VerticalContentAlignment="Center">
+						<MenuItem Header="About" Command="{Binding ShowAboutCommand}" />
+					</MenuItem>
+				</Menu>
+			</Grid>
+		</Border>
+
+		<TabControl Margin="24 22 24 24" Grid.Row="1" TabStripPlacement="Left">
 			<TabItem Header="Connection">
-				<vw:ConnectionView Margin="10" DataContext="{Binding ConnectionVm}" />
+				<vw:ConnectionView DataContext="{Binding ConnectionVm}" />
 			</TabItem>
 			<TabItem Header="System">
-				<vw:SystemView Margin="10" />
+				<vw:SystemView />
 			</TabItem>
 			<TabItem Header="Assist Levels">
-				<vw:AssistLevelsView Margin="10" DataContext="{Binding AssistLevelsVm}" />
+				<vw:AssistLevelsView DataContext="{Binding AssistLevelsVm}" />
 			</TabItem>
 			<TabItem Header="Calibration" DataContext="{Binding CalibrationVm}">
-				<vw:CalibrationView Margin="10" />
+				<vw:CalibrationView />
 			</TabItem>
 			<TabItem Header="Event Log" DataContext="{Binding EventLogVm}">
-				<vw:EventLogView Margin="10" />
+				<vw:EventLogView />
 			</TabItem>
 		</TabControl>
 		
