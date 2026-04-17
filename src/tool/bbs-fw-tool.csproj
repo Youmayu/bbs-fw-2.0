@@ -11,9 +11,10 @@
 	<RootNamespace>BBSFW</RootNamespace>
     <UseWPF>true</UseWPF>
     <AssemblyName>BBSFWTool</AssemblyName>
-    <Authors>Daniel Nilsson</Authors>
-    <AssemblyVersion>1.5.99.0</AssemblyVersion>
-    <FileVersion>1.5.99.0</FileVersion>
+    <Authors>Daniel Nilsson; He You Ma</Authors>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <InformationalVersion>2.0.0</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

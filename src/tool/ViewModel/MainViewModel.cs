@@ -239,7 +239,11 @@ namespace BBSFW.ViewModel
 		private void OnShowAbout()
 		{
 			var version = Assembly.GetExecutingAssembly().GetName().Version;
-			MessageBox.Show($"Version: {version.Major}.{version.Minor}.{version.Build}\nAuthor: Daniel Nilsson", "BBS-FW Tool", MessageBoxButton.OK, MessageBoxImage.Information);
+			MessageBox.Show(
+				$"Version: {version.Major}.{version.Minor}.{version.Build}\nOriginal author: Daniel Nilsson\nContinued by: He You Ma",
+				"BBS-FW Tool",
+				MessageBoxButton.OK,
+				MessageBoxImage.Information);
 		}
 
 		private void OnExit()

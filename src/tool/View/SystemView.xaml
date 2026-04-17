@@ -9,28 +9,82 @@
 
 	<UserControl.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+		<Style TargetType="{x:Type TabControl}">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type TabControl}">
+						<Grid KeyboardNavigation.TabNavigation="Local">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+
+							<Border Grid.Row="0"
+									Background="{DynamicResource SurfaceAltBrush}"
+									BorderBrush="{DynamicResource BorderBrush}"
+									BorderThickness="1"
+									CornerRadius="8"
+									Padding="4"
+									Margin="0 0 0 18">
+								<TabPanel x:Name="HeaderPanel"
+										  IsItemsHost="True"
+										  KeyboardNavigation.TabIndex="1" />
+							</Border>
+
+							<ScrollViewer Grid.Row="1"
+										  VerticalScrollBarVisibility="Auto"
+										  HorizontalScrollBarVisibility="Disabled">
+								<ContentPresenter x:Name="PART_SelectedContentHost"
+												  ContentSource="SelectedContent"
+												  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+							</ScrollViewer>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style TargetType="{x:Type TabItem}">
+			<Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type TabItem}">
+						<Border x:Name="Chrome"
+								Background="Transparent"
+								CornerRadius="7"
+								Margin="0 0 4 0"
+								Padding="13 8"
+								TextElement.Foreground="{TemplateBinding Foreground}">
+							<ContentPresenter ContentSource="Header"
+											  HorizontalAlignment="Center"
+											  VerticalAlignment="Center" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SurfaceBrush}" />
+							</Trigger>
+							<Trigger Property="IsSelected" Value="True">
+								<Setter Property="Foreground" Value="White" />
+								<Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentBrush}" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Resources>
-	
-	<Grid>
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-			<ColumnDefinition Width="20" />
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
-
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
-		<StackPanel Grid.Column="0" Grid.Row="0" >
-			
-			<Grid>
-
+	<TabControl>
+		<TabItem Header="{DynamicResource Loc.System.Global}">
+			<Grid MaxWidth="560" HorizontalAlignment="Left">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="10" />
-					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
 				<Grid.RowDefinitions>
@@ -45,29 +99,31 @@
 				<TextBlock Grid.Row="0" Text="Global" FontSize="18" FontWeight="Bold" />
 
 				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 10 0 0" Text="Max Current (A):" />
-				<TextBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxCurrentAmps, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Width="70" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxCurrentAmps, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 10 0 0" Text="Current Ramp (A/s):" />
-				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.CurrentRampAmpsSecond, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 10 0 0" Width="70" HorizontalAlignment="Right" Text="{Binding ConfigVm.CurrentRampAmpsSecond, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="3" Margin="0 10 0 0" Text="Max Battery Voltage (V):" />
-				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxBatteryVolts, UpdateSourceTrigger=LostFocus}" />
+				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 10 0 0" Width="70" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxBatteryVolts, UpdateSourceTrigger=LostFocus}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="4" Margin="0 8 0 0" Text="Low Voltage Cutoff (V):" />
-				<TextBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.LowCutoffVolts, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Width="70" HorizontalAlignment="Right" Text="{Binding ConfigVm.LowCutoffVolts, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="5" Margin="0 10 0 0" Text="Max Speed (km/h):" Visibility="{Binding ConfigVm.UseMetricUnits, Converter={StaticResource BoolToVis}}" />
-				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxSpeedKph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseMetricUnits, Converter={StaticResource BoolToVis}}" />
+				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 10 0 0" Width="70" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxSpeedKph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseMetricUnits, Converter={StaticResource BoolToVis}}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="5" Margin="0 10 0 0" Text="Max Speed (mph):" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}" />
-				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxSpeedMph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}" />
+				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 10 0 0" Width="70" HorizontalAlignment="Right" Text="{Binding ConfigVm.MaxSpeedMph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}" />
 			</Grid>
+		</TabItem>
 
-			<Grid Margin="0 20 0 0">
+		<TabItem Header="{DynamicResource Loc.System.Throttle}">
+			<Grid MaxWidth="620" HorizontalAlignment="Left">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="10" />
-					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
 				<Grid.RowDefinitions>
@@ -82,19 +138,19 @@
 				<TextBlock Grid.Row="0" Text="Throttle" FontSize="18" FontWeight="Bold" />
 
 				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 10 0 0" Text="Start Voltage (mV):" />
-				<TextBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleStartVoltageMillivolts, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleStartVoltageMillivolts, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="End Voltage (mV):" />
-				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleEndVoltageMillivolts, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleEndVoltageMillivolts, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="3" Margin="0 8 0 0" Text="Start Current (%):" />
-				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleStartCurrentPercent, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleStartCurrentPercent, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="4" Margin="0 8 0 0" Text="Global Speed Limit Options:">
 					<TextBlock.ToolTip>
 						<TextBlock Width="400" TextWrapping="Wrap">
 						Enable global speed limit when throttle is used. Some countries have laws
-						that only permits use of throttle up to a specific speed. This option can
+						that only permit use of throttle up to a specific speed. This option can
 						be used in order to comply with such laws.
 						<LineBreak />
 						<LineBreak />
@@ -111,14 +167,14 @@
 						</TextBlock>
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<ComboBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Padding="6 2 6 0" Width="120" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.ThrottleGlobalSpeedLimitOptions}" SelectedItem="{Binding ConfigVm.ThrottleGlobalSpeedLimit, UpdateSourceTrigger=PropertyChanged}" />
+				<ComboBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Width="150" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.ThrottleGlobalSpeedLimitOptions}" SelectedItem="{Binding ConfigVm.ThrottleGlobalSpeedLimit, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="5" Margin="0 8 0 0" Text="Global Speed Limit (%):">
 					<TextBlock.ToolTip>
 					Set speed limit in % of configured max speed when global throttle speed limit is enabled.
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleGlobalSpeedLimitPercent, UpdateSourceTrigger=PropertyChanged}">
+				<TextBox Grid.Column="2" Grid.Row="5" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.ThrottleGlobalSpeedLimitPercent, UpdateSourceTrigger=PropertyChanged}">
 					<TextBox.Style>
 						<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
 							<Setter Property="IsEnabled" Value="True" />
@@ -130,14 +186,15 @@
 						</Style>
 					</TextBox.Style>
 				</TextBox>
-
 			</Grid>
+		</TabItem>
 
-			<Grid Margin="0 20 0 0">
+		<TabItem Header="{DynamicResource Loc.System.PedalAssist}">
+			<Grid MaxWidth="620" HorizontalAlignment="Left">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="10" />
-					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
 				<Grid.RowDefinitions>
@@ -150,11 +207,11 @@
 
 				<TextBlock Grid.Row="0" Text="Pedal Assist" FontSize="18" FontWeight="Bold" />
 
-				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 10 0 0" Text="Start Delay (°):" />
-				<ComboBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Padding="6 2 6 0" Width="60" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.PasStartDelayOptions, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ConfigVm.PasStartDelayDegrees}" />
+				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 10 0 0" Text="Start Delay (degrees):" />
+				<ComboBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Width="80" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.PasStartDelayOptions, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ConfigVm.PasStartDelayDegrees}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Stop Delay (ms):" />
-				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.PasStopDelayMilliseconds, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.PasStopDelayMilliseconds, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="3" Margin="0 8 0 0" Text="Keep Current (%):">
 					<TextBlock.ToolTip>
@@ -163,8 +220,8 @@
 						The assist level current will start ramp down towards this value when cadence hits the limit configured in 'Keep Current Cadence (rpm)'.
 						</TextBlock>
 					</TextBlock.ToolTip>
-			</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.PasKeepCurrentPercent, UpdateSourceTrigger=PropertyChanged}" />
+				</TextBlock>
+				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.PasKeepCurrentPercent, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="4" Margin="0 8 0 0" Text="Keep Current Cadence (rpm):">
 					<TextBlock.ToolTip>
@@ -173,21 +230,17 @@
 						When cadence gets above this value the motor current will decrease towards the current calculated using configured value of 'Keep Current %'.
 						</TextBlock>
 					</TextBlock.ToolTip>
-			</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.PasKeepCurrentCadenceRpm, UpdateSourceTrigger=PropertyChanged}" />
-
+				</TextBlock>
+				<TextBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.PasKeepCurrentCadenceRpm, UpdateSourceTrigger=PropertyChanged}" />
 			</Grid>
+		</TabItem>
 
-		</StackPanel>
-
-		<StackPanel Grid.Column="2" Grid.Row="0">
-
-			<Grid>
-
+		<TabItem Header="{DynamicResource Loc.System.Features}">
+			<Grid MaxWidth="680" HorizontalAlignment="Left">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="10" />
-					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
 				<Grid.RowDefinitions>
@@ -204,25 +257,24 @@
 				<TextBlock Grid.Row="0" Text="Features" FontSize="18" FontWeight="Bold" />
 
 				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 8 0 0" Text="Speed Sensor:" />
-				<CheckBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" HorizontalAlignment="Right"  IsChecked="{Binding ConfigVm.UseSpeedSensor, UpdateSourceTrigger=PropertyChanged}" />
+				<CheckBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" HorizontalAlignment="Right" IsChecked="{Binding ConfigVm.UseSpeedSensor, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Shift Sensor:" />
-				<CheckBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" HorizontalAlignment="Right"  IsChecked="{Binding ConfigVm.UseShiftSensor, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ConfigVm.IsShiftSensorSupported}" />
+				<CheckBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" HorizontalAlignment="Right" IsChecked="{Binding ConfigVm.UseShiftSensor, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ConfigVm.IsShiftSensorSupported}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="3" Margin="0 8 0 0" Text="Walk Mode:" />
-				<CheckBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" HorizontalAlignment="Right"  IsChecked="{Binding ConfigVm.UsePushWalk, UpdateSourceTrigger=PropertyChanged}" />
+				<CheckBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" HorizontalAlignment="Right" IsChecked="{Binding ConfigVm.UsePushWalk, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="4" Margin="0 8 0 0" Text="Temperature Sensor:">
 					<TextBlock.ToolTip>
 						<TextBlock Width="300" TextWrapping="Wrap">
-						Select which temperature sensors to use for thermal limiting if motor/controller gets to hot.
-						Normally you should have this set to "All" but if you have a motor or controller with a broken
-						temperature sensor it could be usuful to select only the sensors that are working. This will let
-						you continue to use your motor/controller even though temperature monitoring is not working.
+						Select which temperature sensors to use for thermal limiting if motor/controller gets too hot.
+						Normally you should have this set to "All", but if you have a motor or controller with a broken
+						temperature sensor it can be useful to select only the sensors that are working.
 						</TextBlock>
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<ComboBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Padding="6 2 6 0" Width="80" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.TemperatureSensorOptions}" SelectedItem="{Binding ConfigVm.UseTemperatureSensor, UpdateSourceTrigger=PropertyChanged}" />
+				<ComboBox Grid.Column="2" Grid.Row="4" Margin="0 8 0 0" Width="120" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.TemperatureSensorOptions}" SelectedItem="{Binding ConfigVm.UseTemperatureSensor, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="5" Margin="0 8 0 0" Text="Lights Mode:">
 					<TextBlock.ToolTip>
@@ -240,7 +292,7 @@
 						</TextBlock>
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<ComboBox Grid.Column="2" Grid.Row="5" Margin="0 8 0 0" Padding="6 2 6 0" Width="100" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.LightsModeOptions}" SelectedItem="{Binding ConfigVm.LightsMode, UpdateSourceTrigger=PropertyChanged}" />
+				<ComboBox Grid.Column="2" Grid.Row="5" Margin="0 8 0 0" Width="120" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.LightsModeOptions}" SelectedItem="{Binding ConfigVm.LightsMode, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="6" Margin="0 8 0 0" Text="Pretension Chain:">
 					<TextBlock.ToolTip>
@@ -251,60 +303,105 @@
 						</TextBlock>
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<CheckBox Grid.Column="2" Grid.Row="6" Margin="0 8 0 0" HorizontalAlignment="Right"  IsChecked="{Binding ConfigVm.UsePretension, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ConfigVm.UseSpeedSensor}" />
+				<CheckBox Grid.Column="2" Grid.Row="6" Margin="0 8 0 0" HorizontalAlignment="Right" IsChecked="{Binding ConfigVm.UsePretension, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ConfigVm.UseSpeedSensor}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="7" Margin="0 10 0 0" Text="Pretension Speed Cutoff (km/h):" Visibility="{Binding ConfigVm.UseMetricUnits, Converter={StaticResource BoolToVis}}">
 					<TextBlock.ToolTip>
 						<TextBlock Width="300" TextWrapping="Wrap">
-							Pretension will not be applied at and below this roadspeed. Take caution setting this to zero, as
-							your bike will roll forward as soon as it is powered on and pushed. Recommended to start with ~16kph
+							Pretension will not be applied at and below this road speed. Take caution setting this to zero, as
+							your bike will roll forward as soon as it is powered on and pushed. Recommended to start with about 16 kph
 							and lower if necessary once comfortable with the feature.
-					</TextBlock>
-				</TextBlock.ToolTip>
+						</TextBlock>
+					</TextBlock.ToolTip>
 				</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="7" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.PretensionSpeedCutoffKph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseMetricUnits, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding ConfigVm.UseSpeedSensor}" />
+				<TextBox Grid.Column="2" Grid.Row="7" Margin="0 10 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.PretensionSpeedCutoffKph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseMetricUnits, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding ConfigVm.UseSpeedSensor}" />
 
-				<TextBlock Grid.Column="0" Grid.Row="7" Margin="0 10 0 0" Text="Pretension Speed Cutoff (mph):" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}" >
+				<TextBlock Grid.Column="0" Grid.Row="7" Margin="0 10 0 0" Text="Pretension Speed Cutoff (mph):" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}">
 					<TextBlock.ToolTip>
 						<TextBlock Width="300" TextWrapping="Wrap">
-							Pretension will not be applied at and below this roadspeed. Take caution setting this to zero, as
-							your bike will roll forward as soon as it is powered on and pushed. Recommended to start with ~10mph
+							Pretension will not be applied at and below this road speed. Take caution setting this to zero, as
+							your bike will roll forward as soon as it is powered on and pushed. Recommended to start with about 10 mph
 							and lower if necessary once comfortable with the feature.
-					</TextBlock>
-				</TextBlock.ToolTip>
+						</TextBlock>
+					</TextBlock.ToolTip>
 				</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="7" Margin="0 10 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.PretensionSpeedCutoffMph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding ConfigVm.UseSpeedSensor}" />
-
+				<TextBox Grid.Column="2" Grid.Row="7" Margin="0 10 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.PretensionSpeedCutoffMph, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ConfigVm.UseImperialUnits, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding ConfigVm.UseSpeedSensor}" />
 			</Grid>
+		</TabItem>
 
-			<Grid Margin="0 20 0 0">
+		<TabItem Header="{DynamicResource Loc.System.SpeedShift}">
+			<StackPanel MaxWidth="620" HorizontalAlignment="Left">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="10" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Text="Speed Sensor" FontSize="18" FontWeight="Bold" />
+
+					<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 10 0 0" Text="Wheel Size (inch):" />
+					<TextBox Grid.Column="2" Grid.Row="1" Margin="0 10 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.WheelSizeInch, UpdateSourceTrigger=LostFocus}" />
+
+					<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Signals (per rotation):" />
+					<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right" Text="{Binding ConfigVm.SpeedSensorSignals, UpdateSourceTrigger=PropertyChanged}" />
+				</Grid>
+
+				<Grid Margin="0 24 0 0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="10" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Text="Shift Sensor" FontSize="18" FontWeight="Bold" />
+
+					<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 8 0 0" Text="Shift Interrupt Duration (ms):">
+						<TextBlock.ToolTip>
+							<TextBlock Width="300" TextWrapping="Wrap">
+							Duration of the power interrupt when the shift sensor is triggered.
+							</TextBlock>
+						</TextBlock.ToolTip>
+					</TextBlock>
+					<TextBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right"
+							 IsEnabled="{Binding ConfigVm.IsShiftSensorSupported}"
+							 Text="{Binding ConfigVm.ShiftInterruptDuration, UpdateSourceTrigger=PropertyChanged}" />
+
+					<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Shift Current Threshold (%):">
+						<TextBlock.ToolTip>
+							<TextBlock Width="300" TextWrapping="Wrap">
+							Maximum motor current during shifting expressed as a percentage of "Max Current (A)".
+							If motor current is below this threshold, then no power cut will happen.
+							If motor current is higher than this threshold, then current will be reduced to this value during the shift.
+							<LineBreak />
+							For example, if Max Current is 30 amps, and Shift Current Threshold is 10%, then current through the motor during
+							shifts will be limited to 3 amps.
+							</TextBlock>
+						</TextBlock.ToolTip>
+					</TextBlock>
+					<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="80" HorizontalAlignment="Right"
+							 IsEnabled="{Binding ConfigVm.IsShiftSensorSupported}"
+							 Text="{Binding ConfigVm.ShiftInterruptCurrentThresholdPercent, UpdateSourceTrigger=PropertyChanged}" />
+				</Grid>
+			</StackPanel>
+		</TabItem>
+
+		<TabItem Header="{DynamicResource Loc.System.Display}">
+			<Grid MaxWidth="680" HorizontalAlignment="Left">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="10" />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
-
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<TextBlock Grid.Row="0" Text="Speed Sensor" FontSize="18" FontWeight="Bold" />
-
-				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Wheel Size (inch):" />
-				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.WheelSizeInch, UpdateSourceTrigger=LostFocus}" />
-
-				<TextBlock Grid.Column="0" Grid.Row="3" Margin="0 8 0 0" Text="Signals (per rotation):" />
-				<TextBox Grid.Column="2" Grid.Row="3" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right" Text="{Binding ConfigVm.SpeedSensorSignals, UpdateSourceTrigger=PropertyChanged}" />
-
-			</Grid>
-
-			<Grid Margin="0 20 0 0">
-
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="10" />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
@@ -314,52 +411,8 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				
-				<TextBlock Grid.Row="0" Text="Shift Sensor" FontSize="18" FontWeight="Bold" />
 
-				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 8 0 0" Text="Shift Interrupt Duration (ms):">
-					<TextBlock.ToolTip>
-						<TextBlock Width="300" TextWrapping="Wrap">
-						Duration of the power interrupt when the shift sensor is triggered.
-						</TextBlock>
-					</TextBlock.ToolTip>
-				</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right"
-					 IsEnabled="{Binding ConfigVm.IsShiftSensorSupported}"
-					 Text="{Binding ConfigVm.ShiftInterruptDuration, UpdateSourceTrigger=PropertyChanged}" />
-
-				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Shift Current Threshold (%):">
-					<TextBlock.ToolTip>
-						<TextBlock Width="300" TextWrapping="Wrap">
-						Maximum motor current during shifting expressed as a percentage of "Max Current (A)".
-						If motor current is below this threshold, then no power cut will happen.
-						If motor current is higher than this threshold, then current will be reduced to this value during the shift.
-						<LineBreak />
-						For example, if Max Current is 30 amps, and Shift Current Threshold is 10%, then current through the motor during
-						shifts will be limited to 3 amps.
-						</TextBlock>
-					</TextBlock.ToolTip>
-				</TextBlock>
-				<TextBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="60" HorizontalAlignment="Right"
-					 IsEnabled="{Binding ConfigVm.IsShiftSensorSupported}"
-					 Text="{Binding ConfigVm.ShiftInterruptCurrentThresholdPercent, UpdateSourceTrigger=PropertyChanged}" />
-
-			</Grid>
-			
-			<Grid Margin="0 20 0 0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="10" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<TextBlock Grid.Row="0" Text="Miscellaneous" FontSize="18" FontWeight="Bold" />
+				<TextBlock Grid.Row="0" Text="Display" FontSize="18" FontWeight="Bold" />
 
 				<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 10 0 0" Text="Walk Mode Data Display:">
 					<TextBlock.ToolTip>
@@ -369,7 +422,7 @@
 						<LineBreak />
 						<Run FontWeight="Bold">Speed</Run> - Default setting, continue to display road speed.
 						<LineBreak />
-						<Run FontWeight="Bold">Temperature</Run> - Display max value of motor/controller temperature in °C.
+						<Run FontWeight="Bold">Temperature</Run> - Display max value of motor/controller temperature in deg C.
 						<LineBreak />
 						<Run FontWeight="Bold">Requested Power</Run> - Display requested motor power in percent.
 						<LineBreak />
@@ -377,7 +430,7 @@
 						</TextBlock>
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<ComboBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" Padding="6 2 6 0" Width="120" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.WalkModeDataDisplayOptions}" SelectedItem="{Binding ConfigVm.WalkModeDataDisplay, UpdateSourceTrigger=PropertyChanged}" />
+				<ComboBox Grid.Column="2" Grid.Row="1" Margin="0 8 0 0" Width="150" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.WalkModeDataDisplayOptions}" SelectedItem="{Binding ConfigVm.WalkModeDataDisplay, UpdateSourceTrigger=PropertyChanged}" />
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Margin="0 8 0 0" Text="Display:">
 					<TextBlock.ToolTip>
@@ -391,11 +444,8 @@
 						</TextBlock>
 					</TextBlock.ToolTip>
 				</TextBlock>
-				<ComboBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Padding="6 2 6 0" Width="120" Height="20" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.DisplayTypeOptions}" SelectedItem="{Binding ConfigVm.Display, UpdateSourceTrigger=PropertyChanged}" />
-
+				<ComboBox Grid.Column="2" Grid.Row="2" Margin="0 8 0 0" Width="150" HorizontalAlignment="Right" ItemsSource="{Binding ConfigVm.DisplayTypeOptions}" SelectedItem="{Binding ConfigVm.Display, UpdateSourceTrigger=PropertyChanged}" />
 			</Grid>
-
-		</StackPanel>
-
-	</Grid>
+		</TabItem>
+	</TabControl>
 </UserControl>

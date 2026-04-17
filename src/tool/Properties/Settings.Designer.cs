@@ -34,5 +34,29 @@ namespace BBSFW.Properties {
                 this["UseFreedomUnits"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseDarkTheme {
+            get {
+                return ((bool)(this["UseDarkTheme"]));
+            }
+            set {
+                this["UseDarkTheme"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        public string AppLanguage {
+            get {
+                return ((string)(this["AppLanguage"]));
+            }
+            set {
+                this["AppLanguage"] = value;
+            }
+        }
     }
 }

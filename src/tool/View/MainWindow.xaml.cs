@@ -1,17 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BBSFW
 {
@@ -23,6 +11,64 @@ namespace BBSFW
 		public MainWindow()
 		{
 			InitializeComponent();
+			UpdateThemeControls();
+			UpdateLanguageControls();
+			ThemeManager.ThemeChanged += OnThemeChanged;
+			LanguageManager.LanguageChanged += OnLanguageChanged;
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			ThemeManager.ThemeChanged -= OnThemeChanged;
+			LanguageManager.LanguageChanged -= OnLanguageChanged;
+			base.OnClosed(e);
+		}
+
+		private void ToggleTheme_Click(object sender, RoutedEventArgs e)
+		{
+			ThemeManager.ToggleTheme();
+		}
+
+		private void OnThemeChanged(object sender, EventArgs e)
+		{
+			UpdateThemeControls();
+		}
+
+		private void OnLanguageChanged(object sender, EventArgs e)
+		{
+			UpdateThemeControls();
+			UpdateLanguageControls();
+		}
+
+		private void EnglishMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			LanguageManager.SetLanguage(AppLanguage.English);
+		}
+
+		private void ChineseMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			LanguageManager.SetLanguage(AppLanguage.Chinese);
+		}
+
+		private void NorwegianMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			LanguageManager.SetLanguage(AppLanguage.Norwegian);
+		}
+
+		private void UpdateThemeControls()
+		{
+			var useDarkTheme = ThemeManager.IsDarkTheme;
+
+			ThemeToggleButton.Content = useDarkTheme ? LanguageManager.Get("Theme.LightMode") : LanguageManager.Get("Theme.DarkMode");
+			DarkModeMenuItem.IsChecked = useDarkTheme;
+			ThemeStatusText.Text = useDarkTheme ? LanguageManager.Get("Theme.DarkStatus") : LanguageManager.Get("Theme.LightStatus");
+		}
+
+		private void UpdateLanguageControls()
+		{
+			EnglishMenuItem.IsChecked = LanguageManager.CurrentLanguage == AppLanguage.English;
+			ChineseMenuItem.IsChecked = LanguageManager.CurrentLanguage == AppLanguage.Chinese;
+			NorwegianMenuItem.IsChecked = LanguageManager.CurrentLanguage == AppLanguage.Norwegian;
 		}
 	}
 }
