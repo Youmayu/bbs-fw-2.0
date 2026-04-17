@@ -72,6 +72,13 @@ namespace BBSFW.ViewModel
 				new ValueItemViewModel<Configuration.LightsModeOptions>(Configuration.LightsModeOptions.BrakeLight, "Brake Light"),
 			};
 
+		public static List<ValueItemViewModel<Configuration.DisplayType>> DisplayTypeOptions { get; } =
+			new List<ValueItemViewModel<Configuration.DisplayType>>
+			{
+				new ValueItemViewModel<Configuration.DisplayType>(Configuration.DisplayType.Other, "Other displays"),
+				new ValueItemViewModel<Configuration.DisplayType>(Configuration.DisplayType.Display860C, "860C"),
+			};
+
 
 		// support 
 
@@ -512,6 +519,22 @@ namespace BBSFW.ViewModel
 				{
 					_config.WalkModeDataDisplay = value.Value;
 					OnPropertyChanged(nameof(WalkModeDataDisplay));
+				}
+			}
+		}
+
+		public ValueItemViewModel<Configuration.DisplayType> Display
+		{
+			get
+			{
+				return DisplayTypeOptions.FirstOrDefault((e) => e.Value == _config.Display);
+			}
+			set
+			{
+				if (_config.Display != value.Value)
+				{
+					_config.Display = value.Value;
+					OnPropertyChanged(nameof(Display));
 				}
 			}
 		}
