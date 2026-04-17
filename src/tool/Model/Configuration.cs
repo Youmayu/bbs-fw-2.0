@@ -11,7 +11,7 @@ namespace BBSFW.Model
 	[XmlRoot("BBSFW", Namespace ="https://github.com/danielnilsson9/bbs-fw")]
 	public class Configuration
 	{
-		public const int CurrentVersion = 5;
+		public const int CurrentVersion = 6;
 		public const int MinVersion = 1;
 		public const int MaxVersion = CurrentVersion;
 
@@ -20,6 +20,7 @@ namespace BBSFW.Model
 		public const int ByteSizeV3 = 149;
 		public const int ByteSizeV4 = 152;
 		public const int ByteSizeV5 = 154;
+		public const int ByteSizeV6 = 155;
 
 		public enum Feature
 		{
@@ -43,6 +44,8 @@ namespace BBSFW.Model
 					return ByteSizeV4;
 				case 5:
 					return ByteSizeV5;
+				case 6:
+					return ByteSizeV6;
 			}
 
 			return 0;
@@ -109,6 +112,12 @@ namespace BBSFW.Model
 			Disabled = 1,
 			AlwaysOn = 2,
 			BrakeLight = 3
+		}
+
+		public enum DisplayType
+		{
+			Other = 0,
+			Display860C = 1
 		}
 
 		public class AssistLevel
@@ -198,6 +207,7 @@ namespace BBSFW.Model
 
 		// misc
 		public WalkModeData WalkModeDataDisplay;
+		public DisplayType Display;
 
 		// assists options
 		public AssistModeSelect AssistModeSelection;
@@ -247,6 +257,7 @@ namespace BBSFW.Model
 			ShiftInterruptCurrentThresholdPercent = 0;
 
 			WalkModeDataDisplay = WalkModeData.Speed;
+			Display = DisplayType.Other;
 
 			AssistModeSelection = AssistModeSelect.Off;
 			AssistStartupLevel = 0;
@@ -354,6 +365,7 @@ namespace BBSFW.Model
 			ThrottleGlobalSpeedLimitPercent = 100;
 			UsePretension = false;
 			PretensionSpeedCutoffKph = 0;
+			Display = DisplayType.Other;
 
 			return true;
 		}
@@ -431,6 +443,7 @@ namespace BBSFW.Model
 			ThrottleGlobalSpeedLimitPercent = 100;
 			UsePretension = false;
 			PretensionSpeedCutoffKph = 0;
+			Display = DisplayType.Other;
 
 			return true;
 		}
@@ -506,6 +519,7 @@ namespace BBSFW.Model
 			ThrottleGlobalSpeedLimitPercent = 100;
 			UsePretension = false;
 			PretensionSpeedCutoffKph = 0;
+			Display = DisplayType.Other;
 
 			return true;
 		}
@@ -581,6 +595,7 @@ namespace BBSFW.Model
 			// apply default settings for non existing options in version
 			UsePretension = false;
 			PretensionSpeedCutoffKph = 0;
+			Display = DisplayType.Other;
 
 			return true;
 		}
@@ -655,6 +670,82 @@ namespace BBSFW.Model
 				}
 			}
 
+			Display = DisplayType.Other;
+
+			return true;
+		}
+
+		public bool ParseFromBufferV6(byte[] buffer)
+		{
+			if (buffer.Length != ByteSizeV6)
+			{
+				return false;
+			}
+
+			using (var s = new MemoryStream(buffer))
+			{
+				var br = new BinaryReader(s);
+
+				UseFreedomUnits = br.ReadBoolean();
+
+				MaxCurrentAmps = br.ReadByte();
+				CurrentRampAmpsSecond = br.ReadByte();
+				MaxBatteryVolts = br.ReadUInt16() / 100f;
+				LowCutoffVolts = br.ReadByte();
+				MaxSpeedKph = br.ReadByte();
+
+				UseSpeedSensor = br.ReadBoolean();
+				UseShiftSensor = br.ReadBoolean();
+				UsePushWalk = br.ReadBoolean();
+				UseTemperatureSensor = (TemperatureSensor)br.ReadByte();
+				LightsMode = (LightsModeOptions)br.ReadByte();
+				UsePretension = br.ReadBoolean();
+				PretensionSpeedCutoffKph = br.ReadByte();
+
+				WheelSizeInch = br.ReadUInt16() / 10f;
+				NumWheelSensorSignals = br.ReadByte();
+
+				PasStartDelayPulses = br.ReadByte();
+				PasStopDelayMilliseconds = br.ReadByte() * 10u;
+				PasKeepCurrentPercent = br.ReadByte();
+				PasKeepCurrentCadenceRpm = br.ReadByte();
+
+				ThrottleStartMillivolts = br.ReadUInt16();
+				ThrottleEndMillivolts = br.ReadUInt16();
+				ThrottleStartPercent = br.ReadByte();
+				ThrottleGlobalSpeedLimit = (ThrottleGlobalSpeedLimitOptions)br.ReadByte();
+				ThrottleGlobalSpeedLimitPercent = br.ReadByte();
+
+				ShiftInterruptDuration = br.ReadUInt16();
+				ShiftInterruptCurrentThresholdPercent = br.ReadByte();
+
+				WalkModeDataDisplay = (WalkModeData)br.ReadByte();
+				Display = (DisplayType)br.ReadByte();
+
+				AssistModeSelection = (AssistModeSelect)br.ReadByte();
+				AssistStartupLevel = br.ReadByte();
+
+				for (int i = 0; i < StandardAssistLevels.Length; ++i)
+				{
+					StandardAssistLevels[i].Type = (AssistFlagsType)br.ReadByte();
+					StandardAssistLevels[i].MaxCurrentPercent = br.ReadByte();
+					StandardAssistLevels[i].MaxThrottlePercent = br.ReadByte();
+					StandardAssistLevels[i].MaxCadencePercent = br.ReadByte();
+					StandardAssistLevels[i].MaxSpeedPercent = br.ReadByte();
+					StandardAssistLevels[i].TorqueAmplificationFactor = br.ReadByte() / 10f;
+				}
+
+				for (int i = 0; i < SportAssistLevels.Length; ++i)
+				{
+					SportAssistLevels[i].Type = (AssistFlagsType)br.ReadByte();
+					SportAssistLevels[i].MaxCurrentPercent = br.ReadByte();
+					SportAssistLevels[i].MaxThrottlePercent = br.ReadByte();
+					SportAssistLevels[i].MaxCadencePercent = br.ReadByte();
+					SportAssistLevels[i].MaxSpeedPercent = br.ReadByte();
+					SportAssistLevels[i].TorqueAmplificationFactor = br.ReadByte() / 10f;
+				}
+			}
+
 			return true;
 		}
 
@@ -698,6 +789,7 @@ namespace BBSFW.Model
 				bw.Write((byte)ShiftInterruptCurrentThresholdPercent);
 
 				bw.Write((byte)WalkModeDataDisplay);
+				bw.Write((byte)Display);
 
 				bw.Write((byte)AssistModeSelection);
 				bw.Write((byte)AssistStartupLevel);
@@ -757,6 +849,7 @@ namespace BBSFW.Model
 			ShiftInterruptDuration = cfg.ShiftInterruptDuration;
 			ShiftInterruptCurrentThresholdPercent = cfg.ShiftInterruptCurrentThresholdPercent;
 			WalkModeDataDisplay = cfg.WalkModeDataDisplay;
+			Display = cfg.Display;
 			AssistModeSelection = cfg.AssistModeSelection;
 			AssistStartupLevel = cfg.AssistStartupLevel;
 
